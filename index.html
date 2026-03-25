@@ -9,64 +9,89 @@ body {
   font-family: Arial;
   background: #0f172a;
   color: #e2e8f0;
+  margin: 0;
   padding: 10px;
+}
+
+h2 {
+  text-align: center;
+  color: #38bdf8;
 }
 
 #note {
   width: 100%;
   height: 300px;
   background: #020617;
-  color: white;
+  color: #e2e8f0;
   border: 1px solid #38bdf8;
   padding: 10px;
+  border-radius: 6px;
+}
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 10px;
+  color: #94a3b8;
 }
 </style>
 </head>
 
 <body>
 
-<h3>📝 Vita Sync Note</h3>
+<h2>📝 Vita Sync Note</h2>
 
 <textarea id="note" placeholder="langsung ketik..."></textarea>
+
+<div class="footer">Auto Sync Mode ⚡</div>
 
 <script>
 const BIN_ID = 69c3a943c3097a1dd55a481e;
 const API_KEY = $2a$10$A7piBO.rLNIYBsSMjngiBuZ1/KIqb8s6nt67wsIbEHpMl3gDtEin.;
 
-let note = document.getElementById("note");
+var note = document.getElementById("note");
 
 // LOAD dari server
-async function load(){
-  let res = await fetch("https://api.jsonbin.io/v3/b/" + BIN_ID + "/latest", {
-    headers: {
-      "X-Master-Key": API_KEY
+function load(){
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "https://api.jsonbin.io/v3/b/" + BIN_ID + "/latest", true);
+  xhr.setRequestHeader("X-Master-Key", API_KEY);
+
+  xhr.onreadystatechange = function(){
+    if(xhr.readyState == 4 && xhr.status == 200){
+      try {
+        var data = JSON.parse(xhr.responseText);
+        note.value = data.record.text || "";
+      } catch(e){}
     }
-  });
-  let data = await res.json();
-  note.value = data.record.text || "";
+  };
+
+  xhr.send();
 }
 
 // SAVE ke server
-async function save(){
-  await fetch("https://api.jsonbin.io/v3/b/" + BIN_ID, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Master-Key": API_KEY
-    },
-    body: JSON.stringify({ text: note.value })
+function save(){
+  var xhr = new XMLHttpRequest();
+  xhr.open("PUT", "https://api.jsonbin.io/v3/b/" + BIN_ID, true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.setRequestHeader("X-Master-Key", API_KEY);
+
+  var data = JSON.stringify({
+    text: note.value
   });
+
+  xhr.send(data);
 }
 
 // auto save tiap ngetik
-note.addEventListener("input", function(){
+note.onkeyup = function(){
   save();
-});
+};
 
-// auto sync tiap 3 detik
-setInterval(load, 3000);
+// auto sync tiap 4 detik
+setInterval(load, 4000);
 
-// pertama load
+// load pertama
 load();
 </script>
 

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vita Chat</title>
+</head>
+<body>
+
+<h3>Vita Chat</h3>
+
+<textarea id="chat" style="width:100%;height:200px;"></textarea><br>
+
+<input id="msg" placeholder="ketik..." style="width:70%">
+<button onclick="send()">Kirim</button>
+
+<script>
+let chat = document.getElementById("chat");
+
+function send(){
+  let msg = document.getElementById("msg");
+  chat.value += "\n" + msg.value;
+  msg.value = "";
+  localStorage.setItem("chatlog", chat.value);
+}
+
+function load(){
+  chat.value = localStorage.getItem("chatlog") || "";
+}
+
+setInterval(load, 2000);
+load();
+</script>
+
+</body>
+</html>

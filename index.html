@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vita Chat</title>
+<title>Vita Note</title>
 
 <style>
 body {
@@ -18,32 +18,14 @@ h2 {
   color: #38bdf8;
 }
 
-#chat {
+#note {
   width: 100%;
-  height: 220px;
+  height: 300px;
   background: #020617;
   color: #e2e8f0;
   border: 1px solid #38bdf8;
-  padding: 8px;
+  padding: 10px;
   border-radius: 6px;
-}
-
-#msg {
-  width: 70%;
-  padding: 8px;
-  border: none;
-  border-radius: 6px;
-  margin-top: 8px;
-}
-
-button {
-  width: 25%;
-  padding: 8px;
-  background: #38bdf8;
-  color: black;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
 .footer {
@@ -57,32 +39,23 @@ button {
 </head>
 <body>
 
-<h2>💬 Vita Chat</h2>
+<h2>📝 Vita Note</h2>
 
-<textarea id="chat" readonly></textarea><br>
+<textarea id="note" placeholder="langsung ketik aja..."></textarea>
 
-<input id="msg" placeholder="ketik pesan...">
-<button id="sendBtn">Kirim</button>
-
-<div class="footer">PS Vita Ready ⚡</div>
+<div class="footer">Auto Save Mode ⚡</div>
 
 <script>
-let chat = document.getElementById("chat");
-let btn = document.getElementById("sendBtn");
+let note = document.getElementById("note");
 
-btn.addEventListener("click", send);
+// auto save tiap ngetik
+note.addEventListener("input", function(){
+  localStorage.setItem("vitanote", note.value);
+});
 
-function send(){
-  let msg = document.getElementById("msg");
-  if(msg.value.trim() === "") return;
-  
-  chat.value += "\n> " + msg.value;
-  msg.value = "";
-  localStorage.setItem("chatlog", chat.value);
-}
-
+// auto load tiap 2 detik
 function load(){
-  chat.value = localStorage.getItem("chatlog") || "";
+  note.value = localStorage.getItem("vitanote") || "";
 }
 
 setInterval(load, 2000);

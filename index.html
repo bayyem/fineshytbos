@@ -43,6 +43,7 @@ button {
   color: black;
   border: none;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 .footer {
@@ -61,15 +62,20 @@ button {
 <textarea id="chat" readonly></textarea><br>
 
 <input id="msg" placeholder="ketik pesan...">
-<button onclick="send()">Kirim</button>
+<button id="sendBtn">Kirim</button>
 
 <div class="footer">PS Vita Ready ⚡</div>
 
 <script>
 let chat = document.getElementById("chat");
+let btn = document.getElementById("sendBtn");
+
+btn.addEventListener("click", send);
 
 function send(){
   let msg = document.getElementById("msg");
+  if(msg.value.trim() === "") return;
+  
   chat.value += "\n> " + msg.value;
   msg.value = "";
   localStorage.setItem("chatlog", chat.value);
